@@ -1,0 +1,97 @@
+
+
+---
+title: "Tinyplot Tutorial"
+subtitle: "A quick into to the R graphics package"
+author: Norm Matloff
+toc: true
+---
+
+[Author bio](https://heather.cs.ucdavis.edu/matloff.html)
+
+
+::: {.callout-important title='Main Points'}
+
+I used to use ggplot2 for almost all my plots, but lately I've just used
+base-R. The tinyplots package, an extension of base-R plots, allows me
+to do so in a more convenient, pleasant and intuitive manner.
+Advantages:
+
+* Automatic generation of legends.
+
+* Natural syntax: R 'formula' plus '|', the latter evoking conditional
+  probability. E.g. "salary ~ age | sex", plotting salary against age,
+  with separate curves etc. for men and women. 
+
+* One can even have e.g. '|U' for a continuous U! It then means a color
+  gradient.
+
+* Easy to add to existing plot. Easy to save plot to disk. Easy faceting. 
+
+:::
+
+# Examples
+
+So, let's try it on the **svcensus** dataset from my **qeML** package.
+
+```{r}
+library(qeML)
+data(svcensus)
+head(svcensus,5)
+``` 
+
+These are programmers and engineers in the 2000 census. Here **occ**' is 
+one of 6 job categories. My primary interest here is investigating
+possible sex discrimination in salaries. Note: Census data top-coded
+income at \$300,000.
+
+```{r}
+# plot histograms (area 1.0)
+library(tinyplot)
+with(svcensus,tinyplot(~wageinc | gender,
+   data=svcensus,type='density'))
+```
+
+Men seem to have a slight edge in the middle income levels, but possibly
+a substantial one at the very high levels.
+
+```{r}
+# fit linear models for income against age
+with(svcensus,tinyplot(wageinc ~ age | gender,
+   data=svcensus,type='lm')) 
+```
+
+Very few elderly in Silicon Valley! Thus very wide confidence bands at
+the older level.  The wider confidence band for women reflects the fact
+that women are less numerous in this dataset.
+
+```{r}
+# fit linear models for income against age
+with(svcensus,tinyplot(wageinc ~ age | gender,
+   data=svcensus,type='lm')) 
+```
+
+A clear separation between men and women. But...should we apply a linear
+model so carelessly? Let's try a model-free estimate of the regression
+functions.
+
+```{r}
+with(svcensus,tinyplot(wageinc ~ age | gender,
+   data=svcensus,type='loess'))
+```
+
+Whoa! Never assume a linear model willy-nilly.
+
+One of the factors here may be age discrimination. At any rate, men
+definitely seem to be paid more, particular in their early 40s.
+
+We can facet by, say, occupation.
+
+```{r}
+with(svcensus,tinyplot(wageinc ~ age | gender,
+   data=svcensus,type='loess',facet=~occ))
+```
+
+The male advantage seems to be especially pronounced for occupation code
+140.
+
