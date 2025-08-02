@@ -21,27 +21,39 @@ Advantages:
 
 * Natural syntax: R 'formula' plus '|', the latter evoking conditional
   probability. E.g. "salary ~ age | sex", plotting salary against age,
-  with separate curves etc. for men and women. Same for plotting salary
-  alone separately by sex, "~salary | sex".
+  with separate curves etc. for men and women. 
 
-* One can even have e.g. '|U' for a continuous U! It then means a color
-  gradient.
+* One can even have e.g. ' | U' for a continuous U! It then means a color
+  gradient, say for a third variable.
 
 * Easy to add to existing plot. Easy to save plot to disk. Easy faceting. 
 
 :::
+
+# General Syntax
+
+Roughly speaking, the call form is
+
+``` r
+tidyplot(formula,[optional conditioning], type=plot type, 
+   [optional faceting], data=dataset,
+   [optional base-R plot parameters])
+```
+
+One can abbreviate **tidyplot** to **plt**, and plot type has a typing
+shortcut as well (see below).
 
 # Examples
 
 So, let's try it on the **svcensus** dataset from my **qeML** package.
 
 ```{r}
-library(qeML)
+suppressPackageStartupMessages(library(qeML))
 data(svcensus)
 head(svcensus,5)
 ``` 
 
-These are programmers and engineers in the 2000 census. Here **occ**' is 
+These are programmers and engineers in the 2000 census. Here **occ** is 
 one of 6 job categories. My primary interest here is investigating
 possible sex discrimination in salaries. Note: Census data top-coded
 income at \$300,000.
@@ -56,6 +68,10 @@ with(svcensus,tinyplot(~wageinc | gender,
 Men seem to have a slight edge in the middle income levels, but possibly
 a substantial one at the very high levels.
 
+Specifying a plot type via its quoted name is actually a shortcut to 
+calling **type_density**; same with **type_lm** and so on.
+
+
 ```{r}
 # fit linear models for income against age
 with(svcensus,tinyplot(wageinc ~ age | gender,
@@ -63,14 +79,8 @@ with(svcensus,tinyplot(wageinc ~ age | gender,
 ```
 
 Very few elderly in Silicon Valley! Thus very wide confidence bands at
-the older level.  The wider confidence band for women reflects the fact
-that women are less numerous in this dataset.
-
-```{r}
-# fit linear models for income against age
-with(svcensus,tinyplot(wageinc ~ age | gender,
-   data=svcensus,type='lm')) 
-```
+the older level. Similarly, The wider confidence band for women reflects
+the fact that women are less numerous in this dataset.
 
 A clear separation between men and women. But...should we apply a linear
 model so carelessly? Let's try a model-free estimate of the regression
@@ -81,10 +91,12 @@ with(svcensus,tinyplot(wageinc ~ age | gender,
    data=svcensus,type='loess'))
 ```
 
-Whoa! Never assume a linear model willy-nilly.
+Whoa! Never assume a linear model willy-nilly. The true relation is
+nonmonotonic.  One of the factors underlying this nonmonotonicity may be
+age discrimination. 
 
-One of the factors here may be age discrimination. At any rate, men
-definitely seem to be paid more, particular in their early 40s.
+At any rate, men definitely seem to be paid more,
+particular in their early 40s.
 
 We can facet by, say, occupation.
 
@@ -96,3 +108,40 @@ with(svcensus,tinyplot(wageinc ~ age | gender,
 The male advantage seems to be especially pronounced for occupation code
 140.
 
+Let's look at the **Iranian Churn** data in **qeML**.
+
+```{r}
+data(IranianChurn)
+with(svcensus,tinyplot(~Balance | Geography, type='density',data=iranChurn))
+```
+
+Interesting! Customers from France and Spain exhibit a bimodal
+distribution, but those from Germany do not. But this may be due at
+least in part to the default values. The analyst may wish to explore
+using nondefault values:
+
+``` r
+> args(type_density)
+function (bw = "nrd0", joint.bw = c("mean", "full", "none"), 
+    adjust = 1, kernel = c("gaussian", "epanechnikov", "rectangular", 
+    "triangular", "biweight", "cosine", "optcosine"), n = 512, 
+    alpha = NULL) 
+```
+
+This could be done, say, by the call
+
+``` r
+with(svcensus,tinyplot(~Balance | Geography, 
+   type_density(kernel='triangular'),
+   data=iranChurn))
+```
+
+One can also apply the general linear model:
+
+```{r}
+iranChurn$Exited <- as.numeric(iranChurn$Exited == '1')
+with(iranChurn,tinyplot(Exited ~ Balance,
+   type=type_glm(family=binomial),data=iranChurn))
+```
+
+The higher the balance, the more likely the customer is to bolt.
