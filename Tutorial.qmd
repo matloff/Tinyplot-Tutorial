@@ -2,7 +2,7 @@
 
 ---
 title: "Tinyplot Tutorial"
-subtitle: "A quick into to the R graphics package"
+subtitle: "A quick into to an R graphics package"
 author: Norm Matloff
 toc: true
 ---
@@ -14,7 +14,7 @@ toc: true
 
 I used to use **ggplot2** for almost all my plots, but lately I've just used
 base-R. The **tinyplot** package, an extension of base-R plots, allows me
-to do so in a more convenient, pleasant and intuitive manner.
+to access base-plots in a more convenient, pleasant and intuitive manner.
 Advantages:
 
 * Automatic generation of legends.
@@ -28,9 +28,11 @@ Advantages:
 
 * Easy to add to existing plot. Easy to save plot to disk. Easy faceting. 
 
+* Base-R ops still available.
+
 :::
 
-# General Syntax
+# Syntax Overview
 
 Roughly speaking, the call form is
 
@@ -40,10 +42,21 @@ tidyplot(formula,[optional conditioning], type=plot type,
    [optional base-R plot parameters])
 ```
 
-One can abbreviate **tidyplot** to **plt**, and plot type has a typing
-shortcut as well (see below).
+One can abbreviate **tidyplot** to **plt**. 
+
+Plot type can be specified either as a call, e.g. **type_lm()**, or via
+a quoted string shortcut, e.g. **"lm"**.
+
+Layering can be done via **tinyplot_add**.
 
 # Examples
+
+## Census Dataset
+
+These are programmers and engineers in the 2000 census. Here **occ** is 
+one of 6 job categories. My primary interest here is investigating
+possible sex discrimination in salaries. Note: Census data top-coded
+income at \$300,000.
 
 So, let's try it on the **svcensus** dataset from my **qeML** package.
 
@@ -53,10 +66,7 @@ data(svcensus)
 head(svcensus,5)
 ``` 
 
-These are programmers and engineers in the 2000 census. Here **occ** is 
-one of 6 job categories. My primary interest here is investigating
-possible sex discrimination in salaries. Note: Census data top-coded
-income at \$300,000.
+## Compare Densities across Groups
 
 ```{r}
 # plot histograms (area 1.0)
@@ -68,8 +78,7 @@ with(svcensus,tinyplot(~wageinc | gender,
 Men seem to have a slight edge in the middle income levels, but possibly
 a substantial one at the very high levels.
 
-Specifying a plot type via its quoted name is actually a shortcut to 
-calling **type_density**; same with **type_lm** and so on.
+## Fit and Display a Linear Model
 
 
 ```{r}
@@ -86,6 +95,8 @@ A clear separation between men and women. But...should we apply a linear
 model so carelessly? Let's try a model-free estimate of the regression
 functions.
 
+## Model-Free Estimation of a Regression Function
+
 ```{r}
 with(svcensus,tinyplot(wageinc ~ age | gender,
    data=svcensus,type='loess'))
@@ -95,8 +106,10 @@ Whoa! Never assume a linear model willy-nilly. The true relation is
 nonmonotonic.  One of the factors underlying this nonmonotonicity may be
 age discrimination. 
 
-At any rate, men definitely seem to be paid more,
-particular in their early 40s.
+At any rate, men definitely seem to be paid more, particular in their
+early 40s.
+
+### Faceting
 
 We can facet by, say, occupation.
 
@@ -108,7 +121,12 @@ with(svcensus,tinyplot(wageinc ~ age | gender,
 The male advantage seems to be especially pronounced for occupation code
 140.
 
-Let's look at the **Iranian Churn** data in **qeML**.
+## Iranian Churn Dataset
+
+Let's look at the **Iranian Churn** data in **qeML**, on customer
+loyalty in the financial sector.
+
+## Compare Densities across Groups
 
 ```{r}
 data(IranianChurn)
@@ -136,6 +154,8 @@ with(svcensus,tinyplot(~Balance | Geography,
    data=iranChurn))
 ```
 
+## General Linear Models
+
 One can also apply the general linear model:
 
 ```{r}
@@ -145,3 +165,18 @@ with(iranChurn,tinyplot(Exited ~ Balance,
 ```
 
 The higher the balance, the more likely the customer is to bolt.
+
+## Use of Color Gradients
+
+Illustration of the color gradient: Probability customer exits, given
+balance and number of products they use.
+
+```{r}
+z <- glm(Exited ~ Balance + NumOfProducts,iranChurn,family=binomial)
+iranChurn$Fit <- z$fitted.values
+with(iranChurn, plt(Balance ~ NumOfProducts | Fit))
+```
+
+Could be that customers holding a lot of products are satisfied with the
+service, thus unlikely to leave. 
+
