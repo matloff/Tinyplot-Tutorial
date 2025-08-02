@@ -116,8 +116,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#general-syntax" id="toc-general-syntax" class="nav-link active" data-scroll-target="#general-syntax">General Syntax</a></li>
-  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
+  <li><a href="#syntax-overview" id="toc-syntax-overview" class="nav-link active" data-scroll-target="#syntax-overview">Syntax Overview</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a>
+  <ul class="collapse">
+  <li><a href="#census-dataset" id="toc-census-dataset" class="nav-link" data-scroll-target="#census-dataset">Census Dataset</a></li>
+  <li><a href="#compare-densities-across-groups" id="toc-compare-densities-across-groups" class="nav-link" data-scroll-target="#compare-densities-across-groups">Compare Densities across Groups</a></li>
+  <li><a href="#fit-and-display-a-linear-model" id="toc-fit-and-display-a-linear-model" class="nav-link" data-scroll-target="#fit-and-display-a-linear-model">Fit and Display a Linear Model</a></li>
+  <li><a href="#model-free-estimation-of-a-regression-function" id="toc-model-free-estimation-of-a-regression-function" class="nav-link" data-scroll-target="#model-free-estimation-of-a-regression-function">Model-Free Estimation of a Regression Function</a>
+  <ul class="collapse">
+  <li><a href="#faceting" id="toc-faceting" class="nav-link" data-scroll-target="#faceting">Faceting</a></li>
+  </ul></li>
+  <li><a href="#iranian-churn-dataset" id="toc-iranian-churn-dataset" class="nav-link" data-scroll-target="#iranian-churn-dataset">Iranian Churn Dataset</a></li>
+  <li><a href="#compare-densities-across-groups-1" id="toc-compare-densities-across-groups-1" class="nav-link" data-scroll-target="#compare-densities-across-groups-1">Compare Densities across Groups</a></li>
+  <li><a href="#general-linear-models" id="toc-general-linear-models" class="nav-link" data-scroll-target="#general-linear-models">General Linear Models</a></li>
+  <li><a href="#use-of-color-gradients" id="toc-use-of-color-gradients" class="nav-link" data-scroll-target="#use-of-color-gradients">Use of Color Gradients</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -161,25 +174,31 @@ Main Points
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>I used to use <strong>ggplot2</strong> for almost all my plots, but lately I’ve just used base-R. The <strong>tinyplot</strong> package, an extension of base-R plots, allows me to do so in a more convenient, pleasant and intuitive manner. Advantages:</p>
+<p>I used to use <strong>ggplot2</strong> for almost all my plots, but lately I’ve just used base-R. The <strong>tinyplot</strong> package, an extension of base-R plots, allows me to access base-plots in a more convenient, pleasant and intuitive manner. Advantages:</p>
 <ul>
 <li><p>Automatic generation of legends.</p></li>
 <li><p>Natural syntax: R ‘formula’ plus ‘|’, the latter evoking conditional probability. E.g. “salary ~ age | sex”, plotting salary against age, with separate curves etc. for men and women.</p></li>
 <li><p>One can even have e.g.&nbsp;’ | U’ for a continuous U! It then means a color gradient, say for a third variable.</p></li>
 <li><p>Easy to add to existing plot. Easy to save plot to disk. Easy faceting.</p></li>
+<li><p>Base-R ops still available.</p></li>
 </ul>
 </div>
 </div>
-<section id="general-syntax" class="level1">
-<h1>General Syntax</h1>
+<section id="syntax-overview" class="level1">
+<h1>Syntax Overview</h1>
 <p>Roughly speaking, the call form is</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidyplot</span>(formula,[optional conditioning], <span class="at">type=</span>plot type, </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>   [optional faceting], <span class="at">data=</span>dataset,</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>   [optional base<span class="sc">-</span>R plot parameters])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>One can abbreviate <strong>tidyplot</strong> to <strong>plt</strong>, and plot type has a typing shortcut as well (see below).</p>
+<p>One can abbreviate <strong>tidyplot</strong> to <strong>plt</strong>.</p>
+<p>Plot type can be specified either as a call, e.g.&nbsp;<strong>type_lm()</strong>, or via a quoted string shortcut, e.g.&nbsp;<strong>“lm”</strong>.</p>
+<p>Layering can be done via <strong>tinyplot_add</strong>.</p>
 </section>
 <section id="examples" class="level1">
 <h1>Examples</h1>
+<section id="census-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="census-dataset">Census Dataset</h2>
+<p>These are programmers and engineers in the 2000 census. Here <strong>occ</strong> is one of 6 job categories. My primary interest here is investigating possible sex discrimination in salaries. Note: Census data top-coded income at $300,000.</p>
 <p>So, let’s try it on the <strong>svcensus</strong> dataset from my <strong>qeML</strong> package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(<span class="fu">library</span>(qeML))</span>
@@ -194,7 +213,9 @@ Main Points
 5 51.18112 zzzOther 100     160       1 female</code></pre>
 </div>
 </div>
-<p>These are programmers and engineers in the 2000 census. Here <strong>occ</strong> is one of 6 job categories. My primary interest here is investigating possible sex discrimination in salaries. Note: Census data top-coded income at $300,000.</p>
+</section>
+<section id="compare-densities-across-groups" class="level2">
+<h2 class="anchored" data-anchor-id="compare-densities-across-groups">Compare Densities across Groups</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot histograms (area 1.0)</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tinyplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -212,7 +233,9 @@ Main Points
 </div>
 </div>
 <p>Men seem to have a slight edge in the middle income levels, but possibly a substantial one at the very high levels.</p>
-<p>Specifying a plot type via its quoted name is actually a shortcut to calling <strong>type_density</strong>; same with <strong>type_lm</strong> and so on.</p>
+</section>
+<section id="fit-and-display-a-linear-model" class="level2">
+<h2 class="anchored" data-anchor-id="fit-and-display-a-linear-model">Fit and Display a Linear Model</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit linear models for income against age</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(svcensus,<span class="fu">tinyplot</span>(wageinc <span class="sc">~</span> age <span class="sc">|</span> gender,</span>
@@ -227,6 +250,9 @@ Main Points
 </div>
 <p>Very few elderly in Silicon Valley! Thus very wide confidence bands at the older level. Similarly, The wider confidence band for women reflects the fact that women are less numerous in this dataset.</p>
 <p>A clear separation between men and women. But…should we apply a linear model so carelessly? Let’s try a model-free estimate of the regression functions.</p>
+</section>
+<section id="model-free-estimation-of-a-regression-function" class="level2">
+<h2 class="anchored" data-anchor-id="model-free-estimation-of-a-regression-function">Model-Free Estimation of a Regression Function</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(svcensus,<span class="fu">tinyplot</span>(wageinc <span class="sc">~</span> age <span class="sc">|</span> gender,</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">data=</span>svcensus,<span class="at">type=</span><span class="st">'loess'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -240,6 +266,8 @@ Main Points
 </div>
 <p>Whoa! Never assume a linear model willy-nilly. The true relation is nonmonotonic. One of the factors underlying this nonmonotonicity may be age discrimination.</p>
 <p>At any rate, men definitely seem to be paid more, particular in their early 40s.</p>
+<section id="faceting" class="level3">
+<h3 class="anchored" data-anchor-id="faceting">Faceting</h3>
 <p>We can facet by, say, occupation.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(svcensus,<span class="fu">tinyplot</span>(wageinc <span class="sc">~</span> age <span class="sc">|</span> gender,</span>
@@ -253,7 +281,14 @@ Main Points
 </div>
 </div>
 <p>The male advantage seems to be especially pronounced for occupation code 140.</p>
-<p>Let’s look at the <strong>Iranian Churn</strong> data in <strong>qeML</strong>.</p>
+</section>
+</section>
+<section id="iranian-churn-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="iranian-churn-dataset">Iranian Churn Dataset</h2>
+<p>Let’s look at the <strong>Iranian Churn</strong> data in <strong>qeML</strong>, on customer loyalty in the financial sector.</p>
+</section>
+<section id="compare-densities-across-groups-1" class="level2">
+<h2 class="anchored" data-anchor-id="compare-densities-across-groups-1">Compare Densities across Groups</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(IranianChurn)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(svcensus,<span class="fu">tinyplot</span>(<span class="sc">~</span>Balance <span class="sc">|</span> Geography, <span class="at">type=</span><span class="st">'density'</span>,<span class="at">data=</span>iranChurn))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -275,6 +310,9 @@ Main Points
 <div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(svcensus,<span class="fu">tinyplot</span>(<span class="sc">~</span>Balance <span class="sc">|</span> Geography, </span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">type_density</span>(<span class="at">kernel=</span><span class="st">'triangular'</span>),</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">data=</span>iranChurn))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="general-linear-models" class="level2">
+<h2 class="anchored" data-anchor-id="general-linear-models">General Linear Models</h2>
 <p>One can also apply the general linear model:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>iranChurn<span class="sc">$</span>Exited <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(iranChurn<span class="sc">$</span>Exited <span class="sc">==</span> <span class="st">'1'</span>)</span>
@@ -289,6 +327,9 @@ Main Points
 </div>
 </div>
 <p>The higher the balance, the more likely the customer is to bolt.</p>
+</section>
+<section id="use-of-color-gradients" class="level2">
+<h2 class="anchored" data-anchor-id="use-of-color-gradients">Use of Color Gradients</h2>
 <p>Illustration of the color gradient: Probability customer exits, given balance and number of products they use.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">glm</span>(Exited <span class="sc">~</span> Balance <span class="sc">+</span> NumOfProducts,iranChurn,<span class="at">family=</span>binomial)</span>
@@ -305,6 +346,7 @@ Main Points
 <p>Could be that customers holding a lot of products are satisfied with the service, thus unlikely to leave.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
