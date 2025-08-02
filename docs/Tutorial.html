@@ -127,7 +127,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">Tinyplot Tutorial</h1>
-<p class="subtitle lead">A quick into to the R graphics package</p>
+<p class="subtitle lead">A quick into to an R graphics package</p>
 </div>
 
 
@@ -289,6 +289,20 @@ Main Points
 </div>
 </div>
 <p>The higher the balance, the more likely the customer is to bolt.</p>
+<p>Illustration of the color gradient: Probability customer exits, given balance and number of products they use.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">glm</span>(Exited <span class="sc">~</span> Balance <span class="sc">+</span> NumOfProducts,iranChurn,<span class="at">family=</span>binomial)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>iranChurn<span class="sc">$</span>Fit <span class="ot">&lt;-</span> z<span class="sc">$</span>fitted.values</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(iranChurn, <span class="fu">plt</span>(Balance <span class="sc">~</span> NumOfProducts <span class="sc">|</span> Fit))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tutorial_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Could be that customers holding a lot of products are satisfied with the service, thus unlikely to leave.</p>
 
 
 </section>
