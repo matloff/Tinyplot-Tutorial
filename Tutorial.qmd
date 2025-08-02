@@ -12,8 +12,8 @@ toc: true
 
 ::: {.callout-important title='Main Points'}
 
-I used to use ggplot2 for almost all my plots, but lately I've just used
-base-R. The tinyplots package, an extension of base-R plots, allows me
+I used to use **ggplot2** for almost all my plots, but lately I've just used
+base-R. The **tinyplot** package, an extension of base-R plots, allows me
 to do so in a more convenient, pleasant and intuitive manner.
 Advantages:
 
@@ -21,7 +21,8 @@ Advantages:
 
 * Natural syntax: R 'formula' plus '|', the latter evoking conditional
   probability. E.g. "salary ~ age | sex", plotting salary against age,
-  with separate curves etc. for men and women. 
+  with separate curves etc. for men and women. Same for plotting salary
+  alone separately by sex, "~salary | sex".
 
 * One can even have e.g. '|U' for a continuous U! It then means a color
   gradient.
