@@ -61,5 +61,12 @@
     "title": "Tinyplot Tutorial",
     "section": "Use of Color Gradients",
     "text": "Use of Color Gradients\nIllustration of the color gradient: Probability customer exits, given balance and number of products they use.\n\nz &lt;- glm(Exited ~ Balance + NumOfProducts,iranChurn,family=binomial)\niranChurn$Fit &lt;- z$fitted.values\nwith(iranChurn, plt(Balance ~ NumOfProducts | Fit))\n\n\n\n\n\n\n\n\nCould be that customers holding a lot of products are satisfied with the service, thus unlikely to leave."
+  },
+  {
+    "objectID": "Tutorial.html#layering",
+    "href": "Tutorial.html#layering",
+    "title": "Tinyplot Tutorial",
+    "section": "Layering",
+    "text": "Layering"
   }
 ]

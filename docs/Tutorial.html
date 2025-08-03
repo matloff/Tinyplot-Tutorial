@@ -130,6 +130,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#compare-densities-across-groups-1" id="toc-compare-densities-across-groups-1" class="nav-link" data-scroll-target="#compare-densities-across-groups-1">Compare Densities across Groups</a></li>
   <li><a href="#general-linear-models" id="toc-general-linear-models" class="nav-link" data-scroll-target="#general-linear-models">General Linear Models</a></li>
   <li><a href="#use-of-color-gradients" id="toc-use-of-color-gradients" class="nav-link" data-scroll-target="#use-of-color-gradients">Use of Color Gradients</a></li>
+  <li><a href="#layering" id="toc-layering" class="nav-link" data-scroll-target="#layering">Layering</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -187,10 +188,10 @@ Main Points
 <section id="syntax-overview" class="level1">
 <h1>Syntax Overview</h1>
 <p>Roughly speaking, the call form is</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidyplot</span>(formula,[optional conditioning], <span class="at">type=</span>plot type, </span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(formula,[optional conditioning], <span class="at">type=</span>plot type, </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>   [optional faceting], <span class="at">data=</span>dataset,</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>   [optional base<span class="sc">-</span>R plot parameters])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>One can abbreviate <strong>tidyplot</strong> to <strong>plt</strong>.</p>
+<p>One can abbreviate <strong>tinyplot</strong> to <strong>plt</strong>.</p>
 <p>Plot type can be specified either as a call, e.g.&nbsp;<strong>type_lm()</strong>, or via a quoted string shortcut, e.g.&nbsp;<strong>“lm”</strong>.</p>
 <p>Layering can be done via <strong>tinyplot_add</strong>.</p>
 </section>
@@ -344,6 +345,9 @@ Main Points
 </div>
 </div>
 <p>Could be that customers holding a lot of products are satisfied with the service, thus unlikely to leave.</p>
+</section>
+<section id="layering" class="level2">
+<h2 class="anchored" data-anchor-id="layering">Layering</h2>
 
 
 </section>
