@@ -18,21 +18,21 @@
     "href": "Tutorial.html#compare-densities-across-groups",
     "title": "Tinyplot Tutorial",
     "section": "Compare Densities across Groups",
-    "text": "Compare Densities across Groups\n\n# plot histograms (area 1.0)\nlibrary(tinyplot)\n\nWarning: package 'tinyplot' was built under R version 4.4.2\n\nwith(svcensus,tinyplot(~wageinc | gender,\n   data=svcensus,type='density'))\n\n\n\n\n\n\n\n\nMen seem to have a slight edge in the middle income levels, but possibly a substantial one at the very high levels."
+    "text": "Compare Densities across Groups\n\n# plot histograms (area 1.0)\nlibrary(tinyplot)\n\nWarning: package 'tinyplot' was built under R version 4.4.2\n\ntinyplot(~wageinc | gender,\n   data=svcensus,type='density')\n\n\n\n\n\n\n\n\nMen seem to have a slight edge in the middle income levels, but possibly a substantial one at the very high levels."
   },
   {
     "objectID": "Tutorial.html#fit-and-display-a-linear-model",
     "href": "Tutorial.html#fit-and-display-a-linear-model",
     "title": "Tinyplot Tutorial",
     "section": "Fit and Display a Linear Model",
-    "text": "Fit and Display a Linear Model\n\n# fit linear models for income against age\nwith(svcensus,tinyplot(wageinc ~ age | gender,\n   data=svcensus,type='lm')) \n\n\n\n\n\n\n\n\nVery few elderly in Silicon Valley! Thus very wide confidence bands at the older level. Similarly, The wider confidence band for women reflects the fact that women are less numerous in this dataset.\nA clear separation between men and women. But…should we apply a linear model so carelessly? Let’s try a model-free estimate of the regression functions."
+    "text": "Fit and Display a Linear Model\n\n# fit linear models for income against age\ntinyplot(wageinc ~ age | gender, data=svcensus,type='lm')\n\n\n\n\n\n\n\n\nVery few elderly in Silicon Valley! Thus very wide confidence bands at the older level. Similarly, The wider confidence band for women reflects the fact that women are less numerous in this dataset.\nA clear separation between men and women. But…should we apply a linear model so carelessly? Let’s try a model-free estimate of the regression functions."
   },
   {
     "objectID": "Tutorial.html#model-free-estimation-of-a-regression-function",
     "href": "Tutorial.html#model-free-estimation-of-a-regression-function",
     "title": "Tinyplot Tutorial",
     "section": "Model-Free Estimation of a Regression Function",
-    "text": "Model-Free Estimation of a Regression Function\n\nwith(svcensus,tinyplot(wageinc ~ age | gender,\n   data=svcensus,type='loess'))\n\n\n\n\n\n\n\n\nWhoa! Never assume a linear model willy-nilly. The true relation is nonmonotonic. One of the factors underlying this nonmonotonicity may be age discrimination.\nAt any rate, men definitely seem to be paid more, particular in their early 40s.\n\nFaceting\nWe can facet by, say, occupation.\n\nwith(svcensus,tinyplot(wageinc ~ age | gender,\n   data=svcensus,type='loess',facet=~occ))\n\n\n\n\n\n\n\n\nThe male advantage seems to be especially pronounced for occupation code 140."
+    "text": "Model-Free Estimation of a Regression Function\n\ntinyplot(wageinc ~ age | gender, data=svcensus,type='loess')\n\n\n\n\n\n\n\n\nWhoa! Never assume a linear model willy-nilly. The true relation is nonmonotonic. One of the factors underlying this nonmonotonicity may be age discrimination.\nAt any rate, men definitely seem to be paid more, particular in their early 40s.\n\nFaceting\nWe can facet by, say, occupation.\n\ntinyplot(wageinc ~ age | gender, data=svcensus,type='loess',facet=~occ)\n\n\n\n\n\n\n\n\nThe male advantage seems to be especially pronounced for occupation code 140."
   },
   {
     "objectID": "Tutorial.html#iranian-churn-dataset",
@@ -46,21 +46,21 @@
     "href": "Tutorial.html#compare-densities-across-groups-1",
     "title": "Tinyplot Tutorial",
     "section": "Compare Densities across Groups",
-    "text": "Compare Densities across Groups\n\ndata(IranianChurn)\nwith(svcensus,tinyplot(~Balance | Geography, type='density',data=iranChurn))\n\n\n\n\n\n\n\n\nInteresting! Customers from France and Spain exhibit a bimodal distribution, but those from Germany do not. But this may be due at least in part to the default values. The analyst may wish to explore using nondefault values:\n&gt; args(type_density)\nfunction (bw = \"nrd0\", joint.bw = c(\"mean\", \"full\", \"none\"), \n    adjust = 1, kernel = c(\"gaussian\", \"epanechnikov\", \"rectangular\", \n    \"triangular\", \"biweight\", \"cosine\", \"optcosine\"), n = 512, \n    alpha = NULL) \nThis could be done, say, by the call\nwith(svcensus,tinyplot(~Balance | Geography, \n   type_density(kernel='triangular'),\n   data=iranChurn))"
+    "text": "Compare Densities across Groups\n\ndata(IranianChurn)\ntinyplot(~Balance | Geography, type='density',data=iranChurn)\n\n\n\n\n\n\n\n\nInteresting! Customers from France and Spain exhibit a bimodal distribution, but those from Germany do not. But this may be due at least in part to the default values. The analyst may wish to explore using nondefault values:\n&gt; args(type_density)\nfunction (bw = \"nrd0\", joint.bw = c(\"mean\", \"full\", \"none\"), \n    adjust = 1, kernel = c(\"gaussian\", \"epanechnikov\", \"rectangular\", \n    \"triangular\", \"biweight\", \"cosine\", \"optcosine\"), n = 512, \n    alpha = NULL) \nThis could be done, say, by the call\ntinyplot(~Balance | Geography, type_density(kernel='triangular'),\n   data=iranChurn)"
   },
   {
     "objectID": "Tutorial.html#general-linear-models",
     "href": "Tutorial.html#general-linear-models",
     "title": "Tinyplot Tutorial",
     "section": "General Linear Models",
-    "text": "General Linear Models\nOne can also apply the general linear model:\n\niranChurn$Exited &lt;- as.numeric(iranChurn$Exited == '1')\nwith(iranChurn,tinyplot(Exited ~ Balance,\n   type=type_glm(family=binomial),data=iranChurn))\n\n\n\n\n\n\n\n\nThe higher the balance, the more likely the customer is to bolt."
+    "text": "General Linear Models\nOne can also apply the general linear model:\n\niranChurn$Exited &lt;- as.numeric(iranChurn$Exited == '1')\ntinyplot(Exited ~ Balance, type=type_glm(family=binomial),data=iranChurn)\n\n\n\n\n\n\n\n\nThe higher the balance, the more likely the customer is to bolt."
   },
   {
     "objectID": "Tutorial.html#use-of-color-gradients",
     "href": "Tutorial.html#use-of-color-gradients",
     "title": "Tinyplot Tutorial",
     "section": "Use of Color Gradients",
-    "text": "Use of Color Gradients\nIllustration of the color gradient: Probability customer exits, given balance and number of products they use.\n\nz &lt;- glm(Exited ~ Balance + NumOfProducts,iranChurn,family=binomial)\niranChurn$Fit &lt;- z$fitted.values\nwith(iranChurn, plt(Balance ~ NumOfProducts | Fit))\n\n\n\n\n\n\n\n\nCould be that customers holding a lot of products are satisfied with the service, thus unlikely to leave."
+    "text": "Use of Color Gradients\nIllustration of the color gradient: Probability customer exits, given balance and number of products they use.\n\nz &lt;- glm(Exited ~ Balance + NumOfProducts,data=iranChurn,family=binomial)\niranChurn$Fit &lt;- z$fitted.values\nplt(Balance ~ NumOfProducts | Fit, data=iranChurn)\n\n\n\n\n\n\n\n\nCould be that customers holding a lot of products are satisfied with the service, thus unlikely to leave."
   },
   {
     "objectID": "Tutorial.html#layering",

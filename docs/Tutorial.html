@@ -183,6 +183,7 @@ Main Points
 <li><p>Easy to add to existing plot. Easy to save plot to disk. Easy faceting.</p></li>
 <li><p>Base-R ops still available.</p></li>
 </ul>
+<p>(Note: the <strong>tinyplot</strong> package should not be confused with <strong>tidyplots</strong>.)</p>
 </div>
 </div>
 <section id="syntax-overview" class="level1">
@@ -223,8 +224,8 @@ Main Points
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: package 'tinyplot' was built under R version 4.4.2</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(svcensus,<span class="fu">tinyplot</span>(<span class="sc">~</span>wageinc <span class="sc">|</span> gender,</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">data=</span>svcensus,<span class="at">type=</span><span class="st">'density'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(<span class="sc">~</span>wageinc <span class="sc">|</span> gender,</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">data=</span>svcensus,<span class="at">type=</span><span class="st">'density'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -239,8 +240,7 @@ Main Points
 <h2 class="anchored" data-anchor-id="fit-and-display-a-linear-model">Fit and Display a Linear Model</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit linear models for income against age</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(svcensus,<span class="fu">tinyplot</span>(wageinc <span class="sc">~</span> age <span class="sc">|</span> gender,</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">data=</span>svcensus,<span class="at">type=</span><span class="st">'lm'</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(wageinc <span class="sc">~</span> age <span class="sc">|</span> gender, <span class="at">data=</span>svcensus,<span class="at">type=</span><span class="st">'lm'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -255,8 +255,7 @@ Main Points
 <section id="model-free-estimation-of-a-regression-function" class="level2">
 <h2 class="anchored" data-anchor-id="model-free-estimation-of-a-regression-function">Model-Free Estimation of a Regression Function</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(svcensus,<span class="fu">tinyplot</span>(wageinc <span class="sc">~</span> age <span class="sc">|</span> gender,</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">data=</span>svcensus,<span class="at">type=</span><span class="st">'loess'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(wageinc <span class="sc">~</span> age <span class="sc">|</span> gender, <span class="at">data=</span>svcensus,<span class="at">type=</span><span class="st">'loess'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -271,8 +270,7 @@ Main Points
 <h3 class="anchored" data-anchor-id="faceting">Faceting</h3>
 <p>We can facet by, say, occupation.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(svcensus,<span class="fu">tinyplot</span>(wageinc <span class="sc">~</span> age <span class="sc">|</span> gender,</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">data=</span>svcensus,<span class="at">type=</span><span class="st">'loess'</span>,<span class="at">facet=</span><span class="sc">~</span>occ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(wageinc <span class="sc">~</span> age <span class="sc">|</span> gender, <span class="at">data=</span>svcensus,<span class="at">type=</span><span class="st">'loess'</span>,<span class="at">facet=</span><span class="sc">~</span>occ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -292,7 +290,7 @@ Main Points
 <h2 class="anchored" data-anchor-id="compare-densities-across-groups-1">Compare Densities across Groups</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(IranianChurn)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(svcensus,<span class="fu">tinyplot</span>(<span class="sc">~</span>Balance <span class="sc">|</span> Geography, <span class="at">type=</span><span class="st">'density'</span>,<span class="at">data=</span>iranChurn))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(<span class="sc">~</span>Balance <span class="sc">|</span> Geography, <span class="at">type=</span><span class="st">'density'</span>,<span class="at">data=</span>iranChurn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -308,17 +306,15 @@ Main Points
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"triangular"</span>, <span class="st">"biweight"</span>, <span class="st">"cosine"</span>, <span class="st">"optcosine"</span>), <span class="at">n =</span> <span class="dv">512</span>, </span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="cn">NULL</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This could be done, say, by the call</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(svcensus,<span class="fu">tinyplot</span>(<span class="sc">~</span>Balance <span class="sc">|</span> Geography, </span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">type_density</span>(<span class="at">kernel=</span><span class="st">'triangular'</span>),</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">data=</span>iranChurn))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(<span class="sc">~</span>Balance <span class="sc">|</span> Geography, <span class="fu">type_density</span>(<span class="at">kernel=</span><span class="st">'triangular'</span>),</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">data=</span>iranChurn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="general-linear-models" class="level2">
 <h2 class="anchored" data-anchor-id="general-linear-models">General Linear Models</h2>
 <p>One can also apply the general linear model:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>iranChurn<span class="sc">$</span>Exited <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(iranChurn<span class="sc">$</span>Exited <span class="sc">==</span> <span class="st">'1'</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(iranChurn,<span class="fu">tinyplot</span>(Exited <span class="sc">~</span> Balance,</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">type=</span><span class="fu">type_glm</span>(<span class="at">family=</span>binomial),<span class="at">data=</span>iranChurn))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(Exited <span class="sc">~</span> Balance, <span class="at">type=</span><span class="fu">type_glm</span>(<span class="at">family=</span>binomial),<span class="at">data=</span>iranChurn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -333,9 +329,9 @@ Main Points
 <h2 class="anchored" data-anchor-id="use-of-color-gradients">Use of Color Gradients</h2>
 <p>Illustration of the color gradient: Probability customer exits, given balance and number of products they use.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">glm</span>(Exited <span class="sc">~</span> Balance <span class="sc">+</span> NumOfProducts,iranChurn,<span class="at">family=</span>binomial)</span>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">glm</span>(Exited <span class="sc">~</span> Balance <span class="sc">+</span> NumOfProducts,<span class="at">data=</span>iranChurn,<span class="at">family=</span>binomial)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>iranChurn<span class="sc">$</span>Fit <span class="ot">&lt;-</span> z<span class="sc">$</span>fitted.values</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(iranChurn, <span class="fu">plt</span>(Balance <span class="sc">~</span> NumOfProducts <span class="sc">|</span> Fit))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plt</span>(Balance <span class="sc">~</span> NumOfProducts <span class="sc">|</span> Fit, <span class="at">data=</span>iranChurn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
