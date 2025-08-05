@@ -8,7 +8,7 @@
 
 <meta name="author" content="Norm Matloff">
 
-<title>Tinyplot Tutorial</title>
+<title>Drawing Insight with Tinyplot Graphics – Tinyplot Tutorial</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -119,17 +119,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#syntax-overview" id="toc-syntax-overview" class="nav-link active" data-scroll-target="#syntax-overview">Syntax Overview</a></li>
   <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a>
   <ul class="collapse">
-  <li><a href="#census-dataset" id="toc-census-dataset" class="nav-link" data-scroll-target="#census-dataset">Census Dataset</a></li>
-  <li><a href="#compare-densities-across-groups" id="toc-compare-densities-across-groups" class="nav-link" data-scroll-target="#compare-densities-across-groups">Compare Densities across Groups</a></li>
-  <li><a href="#fit-and-display-a-linear-model" id="toc-fit-and-display-a-linear-model" class="nav-link" data-scroll-target="#fit-and-display-a-linear-model">Fit and Display a Linear Model</a></li>
-  <li><a href="#model-free-estimation-of-a-regression-function" id="toc-model-free-estimation-of-a-regression-function" class="nav-link" data-scroll-target="#model-free-estimation-of-a-regression-function">Model-Free Estimation of a Regression Function</a>
-  <ul class="collapse">
+  <li><a href="#the-census-dataset" id="toc-the-census-dataset" class="nav-link" data-scroll-target="#the-census-dataset">The Census dataset</a></li>
+  <li><a href="#compare-densities-across-groups" id="toc-compare-densities-across-groups" class="nav-link" data-scroll-target="#compare-densities-across-groups">Compare densities across groups</a></li>
+  <li><a href="#fit-and-display-a-linear-model" id="toc-fit-and-display-a-linear-model" class="nav-link" data-scroll-target="#fit-and-display-a-linear-model">Fit and display a linear model</a></li>
+  <li><a href="#model-free-estimation-of-a-regression-function" id="toc-model-free-estimation-of-a-regression-function" class="nav-link" data-scroll-target="#model-free-estimation-of-a-regression-function">Model-free estimation of a regression function</a></li>
   <li><a href="#faceting" id="toc-faceting" class="nav-link" data-scroll-target="#faceting">Faceting</a></li>
-  </ul></li>
-  <li><a href="#iranian-churn-dataset" id="toc-iranian-churn-dataset" class="nav-link" data-scroll-target="#iranian-churn-dataset">Iranian Churn Dataset</a></li>
-  <li><a href="#compare-densities-across-groups-1" id="toc-compare-densities-across-groups-1" class="nav-link" data-scroll-target="#compare-densities-across-groups-1">Compare Densities across Groups</a></li>
-  <li><a href="#general-linear-models" id="toc-general-linear-models" class="nav-link" data-scroll-target="#general-linear-models">General Linear Models</a></li>
-  <li><a href="#use-of-color-gradients" id="toc-use-of-color-gradients" class="nav-link" data-scroll-target="#use-of-color-gradients">Use of Color Gradients</a></li>
+  <li><a href="#the-iranian-churn-dataset" id="toc-the-iranian-churn-dataset" class="nav-link" data-scroll-target="#the-iranian-churn-dataset">The Iranian Churn dataset</a></li>
+  <li><a href="#compare-densities-across-groups-1" id="toc-compare-densities-across-groups-1" class="nav-link" data-scroll-target="#compare-densities-across-groups-1">Compare densities across groups</a></li>
+  <li><a href="#generalized-linear-models" id="toc-generalized-linear-models" class="nav-link" data-scroll-target="#generalized-linear-models">Generalized linear models</a></li>
+  <li><a href="#the-stanford-vocabulary-dataset" id="toc-the-stanford-vocabulary-dataset" class="nav-link" data-scroll-target="#the-stanford-vocabulary-dataset">The Stanford Vocabulary dataset</a></li>
+  <li><a href="#use-of-color-gradients" id="toc-use-of-color-gradients" class="nav-link" data-scroll-target="#use-of-color-gradients">Use of color gradients</a></li>
   <li><a href="#layering" id="toc-layering" class="nav-link" data-scroll-target="#layering">Layering</a></li>
   </ul></li>
   </ul>
@@ -140,8 +139,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Tinyplot Tutorial</h1>
-<p class="subtitle lead">A quick into to an R graphics package</p>
+<h1 class="title">Drawing Insight with Tinyplot Graphics</h1>
+<p class="subtitle lead">A quick intro to generating <em>interpretable</em> graphs</p>
 </div>
 
 
@@ -175,37 +174,44 @@ Main Points
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>I used to use <strong>ggplot2</strong> for almost all my plots, but lately I’ve just used base-R. The <strong>tinyplot</strong> package, an extension of base-R plots, allows me to access base-plots in a more convenient, pleasant and intuitive manner. Advantages:</p>
+<p>I used to use <strong>ggplot2</strong> for almost all my plots, but lately I’ve just used base-R. The <strong>tinyplot</strong> package, an extension of base-R plots, allows me to access base-R plots in a more convenient, pleasant and intuitive manner. Advantages:</p>
 <ul>
 <li><p>Automatic generation of legends.</p></li>
-<li><p>Natural syntax: R ‘formula’ plus ‘|’, the latter evoking conditional probability. E.g. “salary ~ age | sex”, plotting salary against age, with separate curves etc. for men and women.</p></li>
+<li><p>Natural syntax: R ‘formula’ plus ‘|’, the latter evoking conditional probability. E.g.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(<span class="sc">~</span> wageinc <span class="sc">|</span> gender, <span class="at">data=</span>svcensus,<span class="at">type=</span><span class="st">'density'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>specifies that we plot the <em>conditional</em> density of income, <em>given</em> gender.</p></li>
 <li><p>One can even have e.g.&nbsp;’ | U’ for a continuous U! It then means a color gradient, say for a third variable.</p></li>
-<li><p>Easy to add to existing plot. Easy to save plot to disk. Easy faceting.</p></li>
+<li><p>Easy to add to existing plot. Easy faceting.</p></li>
 <li><p>Base-R ops still available.</p></li>
 </ul>
 <p>(Note: the <strong>tinyplot</strong> package should not be confused with <strong>tidyplots</strong>.)</p>
 </div>
 </div>
-<section id="syntax-overview" class="level1">
-<h1>Syntax Overview</h1>
+<p>Our goal:</p>
+<blockquote class="blockquote">
+<p>Here we present the main features of the <strong>tinyplot</strong> package, but importantly, not in isolation, i.e.&nbsp;<em>not just the mechanics</em>. We show how the package can be <em>used</em> for effective storytelling.</p>
+</blockquote>
+<section id="syntax-overview" class="level2">
+<h2 class="anchored" data-anchor-id="syntax-overview">Syntax Overview</h2>
 <p>Roughly speaking, the call form is</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(formula,[optional conditioning], <span class="at">type=</span>plot type, </span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>   [optional faceting], <span class="at">data=</span>dataset,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>   [optional base<span class="sc">-</span>R plot parameters])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(formula,[optional conditioning], <span class="at">type=</span>plot type, </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>   [optional faceting], <span class="at">data=</span>dataset,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>   [optional base<span class="sc">-</span>R plot parameters])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Most of these are named arguments; make sure you specify the names.</p>
 <p>One can abbreviate <strong>tinyplot</strong> to <strong>plt</strong>.</p>
-<p>Plot type can be specified either as a call, e.g.&nbsp;<strong>type_lm()</strong>, or via a quoted string shortcut, e.g.&nbsp;<strong>“lm”</strong>.</p>
+<p>Plot type can be specified either as a call, e.g.&nbsp;<strong>type_lm()</strong>, or via a quoted string shortcut, e.g.&nbsp;<strong>“lm”</strong>. Note: The <strong>type</strong> argument must come <em>before</em> the <strong>data</strong> argument.</p>
 <p>Layering can be done via <strong>tinyplot_add</strong>.</p>
 </section>
-<section id="examples" class="level1">
-<h1>Examples</h1>
-<section id="census-dataset" class="level2">
-<h2 class="anchored" data-anchor-id="census-dataset">Census Dataset</h2>
-<p>These are programmers and engineers in the 2000 census. Here <strong>occ</strong> is one of 6 job categories. My primary interest here is investigating possible sex discrimination in salaries. Note: Census data top-coded income at $300,000.</p>
+<section id="examples" class="level2">
+<h2 class="anchored" data-anchor-id="examples">Examples</h2>
+<section id="the-census-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="the-census-dataset">The Census dataset</h3>
+<p>These are programmers and engineers in Silicon Valley in the 2000 census. Here <strong>occ</strong> is one of 6 job categories. My primary interest here is investigating possible sex discrimination in salaries. Note: Census data top-coded income at $300,000.</p>
 <p>So, let’s try it on the <strong>svcensus</strong> dataset from my <strong>qeML</strong> package.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(<span class="fu">library</span>(qeML))</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(svcensus)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(svcensus,<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(<span class="fu">library</span>(qeML))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(svcensus)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(svcensus,<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       age     educ occ wageinc wkswrkd gender
 1 50.30082 zzzOther 102   75000      52 female
@@ -216,16 +222,15 @@ Main Points
 </div>
 </div>
 </section>
-<section id="compare-densities-across-groups" class="level2">
-<h2 class="anchored" data-anchor-id="compare-densities-across-groups">Compare Densities across Groups</h2>
+<section id="compare-densities-across-groups" class="level3">
+<h3 class="anchored" data-anchor-id="compare-densities-across-groups">Compare densities across groups</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot histograms (area 1.0)</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tinyplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot histograms (area 1.0)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tinyplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: package 'tinyplot' was built under R version 4.4.2</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(<span class="sc">~</span>wageinc <span class="sc">|</span> gender,</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">data=</span>svcensus,<span class="at">type=</span><span class="st">'density'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(<span class="sc">~</span> wageinc <span class="sc">|</span> gender, <span class="at">data=</span>svcensus,<span class="at">type=</span><span class="st">'density'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -235,12 +240,9 @@ Main Points
 </div>
 </div>
 <p>Men seem to have a slight edge in the middle income levels, but possibly a substantial one at the very high levels.</p>
-</section>
-<section id="fit-and-display-a-linear-model" class="level2">
-<h2 class="anchored" data-anchor-id="fit-and-display-a-linear-model">Fit and Display a Linear Model</h2>
+<p>But of course a big factor is <strong>wkswrkd</strong>, the number of weeks worked. If there is a substantial difference between the sexes in this variable, it could bias our analysis.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit linear models for income against age</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(wageinc <span class="sc">~</span> age <span class="sc">|</span> gender, <span class="at">data=</span>svcensus,<span class="at">type=</span><span class="st">'lm'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>( <span class="sc">~</span> wkswrkd <span class="sc">|</span> gender,<span class="at">data=</span>svcensus,<span class="at">type=</span><span class="st">'density'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -249,13 +251,13 @@ Main Points
 </div>
 </div>
 </div>
-<p>Very few elderly in Silicon Valley! Thus very wide confidence bands at the older level. Similarly, The wider confidence band for women reflects the fact that women are less numerous in this dataset.</p>
-<p>A clear separation between men and women. But…should we apply a linear model so carelessly? Let’s try a model-free estimate of the regression functions.</p>
+<p>Not much difference in general, but more women seemed to report 0 weeks worked.</p>
 </section>
-<section id="model-free-estimation-of-a-regression-function" class="level2">
-<h2 class="anchored" data-anchor-id="model-free-estimation-of-a-regression-function">Model-Free Estimation of a Regression Function</h2>
+<section id="fit-and-display-a-linear-model" class="level3">
+<h3 class="anchored" data-anchor-id="fit-and-display-a-linear-model">Fit and display a linear model</h3>
+<p>It is then natural to correct for number of weeks worked via linear regression. For each gender, fit a linear model predicting <strong>wageinc</strong> from <strong>wkswrkd</strong>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(wageinc <span class="sc">~</span> age <span class="sc">|</span> gender, <span class="at">data=</span>svcensus,<span class="at">type=</span><span class="st">'loess'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(wageinc <span class="sc">~</span> wkswrkd<span class="sc">|</span> gender,<span class="at">data=</span>svcensus,<span class="at">type=</span><span class="st">'lm'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -264,13 +266,10 @@ Main Points
 </div>
 </div>
 </div>
-<p>Whoa! Never assume a linear model willy-nilly. The true relation is nonmonotonic. One of the factors underlying this nonmonotonicity may be age discrimination.</p>
-<p>At any rate, men definitely seem to be paid more, particular in their early 40s.</p>
-<section id="faceting" class="level3">
-<h3 class="anchored" data-anchor-id="faceting">Faceting</h3>
-<p>We can facet by, say, occupation.</p>
+<p>Ah, yes, for those who worked most or all of the year, we see a male advantage. That is, for a given number of weeks worked, the mean salary is higher for men.</p>
+<p>What about possible age differences?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(wageinc <span class="sc">~</span> age <span class="sc">|</span> gender, <span class="at">data=</span>svcensus,<span class="at">type=</span><span class="st">'loess'</span>,<span class="at">facet=</span><span class="sc">~</span>occ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(wageinc <span class="sc">~</span> age <span class="sc">|</span> gender, <span class="at">data=</span>svcensus,<span class="at">type=</span><span class="st">'lm'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -279,18 +278,10 @@ Main Points
 </div>
 </div>
 </div>
-<p>The male advantage seems to be especially pronounced for occupation code 140.</p>
-</section>
-</section>
-<section id="iranian-churn-dataset" class="level2">
-<h2 class="anchored" data-anchor-id="iranian-churn-dataset">Iranian Churn Dataset</h2>
-<p>Let’s look at the <strong>Iranian Churn</strong> data in <strong>qeML</strong>, on customer loyalty in the financial sector.</p>
-</section>
-<section id="compare-densities-across-groups-1" class="level2">
-<h2 class="anchored" data-anchor-id="compare-densities-across-groups-1">Compare Densities across Groups</h2>
+<p>Very few elderly in Silicon Valley! Thus very wide confidence bands at the older level. Similarly, the even wider confidence band for women reflects the fact that women are less numerous in this dataset.</p>
+<p>The conference bands are informative, but they may result in some clutter in more complicated graphs. We can suppress those bands:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(IranianChurn)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(<span class="sc">~</span>Balance <span class="sc">|</span> Geography, <span class="at">type=</span><span class="st">'density'</span>,<span class="at">data=</span>iranChurn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(wageinc <span class="sc">~</span> age <span class="sc">|</span> gender, <span class="at">type=</span><span class="fu">type_lm</span>(<span class="at">se =</span> <span class="cn">FALSE</span>), <span class="at">data=</span>svcensus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -299,22 +290,13 @@ Main Points
 </div>
 </div>
 </div>
-<p>Interesting! Customers from France and Spain exhibit a bimodal distribution, but those from Germany do not. But this may be due at least in part to the default values. The analyst may wish to explore using nondefault values:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">args</span>(type_density)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="cf">function</span> (<span class="at">bw =</span> <span class="st">"nrd0"</span>, <span class="at">joint.bw =</span> <span class="fu">c</span>(<span class="st">"mean"</span>, <span class="st">"full"</span>, <span class="st">"none"</span>), </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">adjust =</span> <span class="dv">1</span>, <span class="at">kernel =</span> <span class="fu">c</span>(<span class="st">"gaussian"</span>, <span class="st">"epanechnikov"</span>, <span class="st">"rectangular"</span>, </span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"triangular"</span>, <span class="st">"biweight"</span>, <span class="st">"cosine"</span>, <span class="st">"optcosine"</span>), <span class="at">n =</span> <span class="dv">512</span>, </span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="cn">NULL</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>This could be done, say, by the call</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(<span class="sc">~</span>Balance <span class="sc">|</span> Geography, <span class="fu">type_density</span>(<span class="at">kernel=</span><span class="st">'triangular'</span>),</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">data=</span>iranChurn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>A clear separation between men and women, with mean wages being consistently lower for women.</p>
 </section>
-<section id="general-linear-models" class="level2">
-<h2 class="anchored" data-anchor-id="general-linear-models">General Linear Models</h2>
-<p>One can also apply the general linear model:</p>
+<section id="model-free-estimation-of-a-regression-function" class="level3">
+<h3 class="anchored" data-anchor-id="model-free-estimation-of-a-regression-function">Model-free estimation of a regression function</h3>
+<p>But…should we apply a linear model so carelessly? Let’s try a model-free estimate of the regression functions, using R’s <strong>loess</strong>, which divides the X-axis into intervals and then fits a local polynomial model in each interval.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>iranChurn<span class="sc">$</span>Exited <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(iranChurn<span class="sc">$</span>Exited <span class="sc">==</span> <span class="st">'1'</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(Exited <span class="sc">~</span> Balance, <span class="at">type=</span><span class="fu">type_glm</span>(<span class="at">family=</span>binomial),<span class="at">data=</span>iranChurn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(wageinc <span class="sc">~</span> age <span class="sc">|</span> gender, <span class="at">type=</span><span class="fu">type_loess</span>(<span class="at">se=</span><span class="cn">FALSE</span>),<span class="at">data=</span>svcensus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -323,15 +305,27 @@ Main Points
 </div>
 </div>
 </div>
-<p>The higher the balance, the more likely the customer is to bolt.</p>
+<p>Whoa! Not linear, not even monotonic. One of the factors underlying this nonmonotonicity may be age discrimination.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Sample Size Issues">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Sample Size Issues
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Never assume a linear model willy-nilly. While no relation in practice is exactly linear and slight discrepancies are fine, the relation may be substantially nonlinear, even substantially nonmonotonic..</p>
+</div>
+</div>
+<p>At any rate, men definitely seem to be paid more, particularly in their early 40s.</p>
 </section>
-<section id="use-of-color-gradients" class="level2">
-<h2 class="anchored" data-anchor-id="use-of-color-gradients">Use of Color Gradients</h2>
-<p>Illustration of the color gradient: Probability customer exits, given balance and number of products they use.</p>
+<section id="faceting" class="level3">
+<h3 class="anchored" data-anchor-id="faceting">Faceting</h3>
+<p>We can facet by, say, occupation.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">glm</span>(Exited <span class="sc">~</span> Balance <span class="sc">+</span> NumOfProducts,<span class="at">data=</span>iranChurn,<span class="at">family=</span>binomial)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>iranChurn<span class="sc">$</span>Fit <span class="ot">&lt;-</span> z<span class="sc">$</span>fitted.values</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plt</span>(Balance <span class="sc">~</span> NumOfProducts <span class="sc">|</span> Fit, <span class="at">data=</span>iranChurn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(<span class="sc">~</span> wageinc, <span class="at">type=</span><span class="st">'density'</span>,<span class="at">data =</span> svcensus, <span class="at">facet=</span><span class="sc">~</span>occ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -340,10 +334,331 @@ Main Points
 </div>
 </div>
 </div>
-<p>Could be that customers holding a lot of products are satisfied with the service, thus unlikely to leave.</p>
+<p>Occupation codes 102 and 141 pay the most.</p>
+<p>We can break it down further by gender:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(<span class="sc">~</span> wageinc <span class="sc">|</span> gender, <span class="at">type=</span><span class="st">'density'</span>,<span class="at">data =</span> svcensus, <span class="at">facet=</span><span class="sc">~</span>occ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tutorial_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In several occupations, notably code 140, the top-code wages seem to be disproportionately male.</p>
+<p>We can facet on two variables:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(<span class="sc">~</span> wageinc <span class="sc">|</span> gender, <span class="at">type=</span><span class="st">'density'</span>,<span class="at">data =</span> svcensus,</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="at">facet=</span><span class="sc">~</span>occ<span class="sc">:</span>gender)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tutorial_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>How about age? Do the sex-specific relations between wageinc and age vary from one occupation to another?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(wageinc <span class="sc">~</span> age <span class="sc">|</span> gender, <span class="at">type =</span> <span class="fu">type_loess</span>(<span class="at">se=</span><span class="cn">FALSE</span>), </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">data =</span> svcensus, <span class="at">facet=</span><span class="sc">~</span>occ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tutorial_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The male advantage seems to be especially pronounced for occupation code 140.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Pesky Syntax Rules">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Pesky Syntax Rules
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Don’t forget the tilde in specifying the faceting variables!</p>
+</div>
+</div>
 </section>
-<section id="layering" class="level2">
-<h2 class="anchored" data-anchor-id="layering">Layering</h2>
+<section id="the-iranian-churn-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="the-iranian-churn-dataset">The Iranian Churn dataset</h3>
+<p>Let’s look at the <strong>Iranian Churn</strong> data in <strong>qeML</strong>, on customer loyalty in the financial sector.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(IranianChurn)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iranChurn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  CreditScore Geography Gender Age Tenure   Balance NumOfProducts HasCrCard
+1         619    France Female  42      2      0.00             1         1
+2         608     Spain Female  41      1  83807.86             1         0
+3         502    France Female  42      8 159660.80             3         1
+4         699    France Female  39      1      0.00             2         0
+5         850     Spain Female  43      2 125510.82             1         1
+6         645     Spain   Male  44      8 113755.78             2         1
+  IsActiveMember EstimatedSalary Exited
+1              1       101348.88      1
+2              1       112542.58      0
+3              0       113931.57      1
+4              0        93826.63      0
+5              1        79084.10      0
+6              0       149756.71      1</code></pre>
+</div>
+</div>
+</section>
+<section id="compare-densities-across-groups-1" class="level3">
+<h3 class="anchored" data-anchor-id="compare-densities-across-groups-1">Compare densities across groups</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(<span class="sc">~</span> Balance <span class="sc">|</span> Geography, <span class="at">type=</span><span class="st">'density'</span>,<span class="at">data=</span>iranChurn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tutorial_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Interesting! Customers from France and Germany exhibit a unimodal distribution, but those from Spain seem to follow a bimodal pattern. But this may be due at least in part to the default values. The analyst may wish to explore using nondefault values:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">args</span>(type_density)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="cf">function</span> (<span class="at">bw =</span> <span class="st">"nrd0"</span>, <span class="at">joint.bw =</span> <span class="fu">c</span>(<span class="st">"mean"</span>, <span class="st">"full"</span>, <span class="st">"none"</span>), </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">adjust =</span> <span class="dv">1</span>, <span class="at">kernel =</span> <span class="fu">c</span>(<span class="st">"gaussian"</span>, <span class="st">"epanechnikov"</span>, <span class="st">"rectangular"</span>, </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"triangular"</span>, <span class="st">"biweight"</span>, <span class="st">"cosine"</span>, <span class="st">"optcosine"</span>), <span class="at">n =</span> <span class="dv">512</span>, </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="cn">NULL</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This could be done, say, by the call</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(<span class="sc">~</span> Balance <span class="sc">|</span> Geography, <span class="at">type=</span><span class="fu">type_density</span>(<span class="at">kernel=</span><span class="st">'triangular'</span>),</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">data=</span>iranChurn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tutorial_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Not much difference.</p>
+</section>
+<section id="generalized-linear-models" class="level3">
+<h3 class="anchored" data-anchor-id="generalized-linear-models">Generalized linear models</h3>
+<p>One can also apply generalized linear models, say the logistic:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>iranChurn<span class="sc">$</span>Exited <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(iranChurn<span class="sc">$</span>Exited <span class="sc">==</span> <span class="st">'1'</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(Exited <span class="sc">~</span> Balance, <span class="at">type=</span><span class="fu">type_glm</span>(<span class="at">family=</span>binomial),<span class="at">data=</span>iranChurn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tutorial_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The higher the balance, the more likely the customer is to bolt.</p>
+</section>
+<section id="the-stanford-vocabulary-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="the-stanford-vocabulary-dataset">The Stanford Vocabulary dataset</h3>
+<p>This is a survey of vocabulary sizes of young children.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(qeML)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(english)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(english)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  data_id age language form birth_order ethnicity    sex         mom_ed
+1       1  24  English   WS       First     Asian Female       Graduate
+2       2  19  English   WS      Second     Black Female        College
+3       3  24  English   WS       First     Other   Male Some_Secondary
+4       4  18  English   WS       First     White   Male      Secondary
+5       5  24  English   WS       First     White Female      Secondary
+6       6  19  English   WS       First     Other Female   Some_College
+     measure vocab     demo    n          demo_label
+1 production   337 All Data 5498 All Data (n = 5498)
+2 production   384 All Data 5498 All Data (n = 5498)
+3 production    76 All Data 5498 All Data (n = 5498)
+4 production    19 All Data 5498 All Data (n = 5498)
+5 production   480 All Data 5498 All Data (n = 5498)
+6 production   313 All Data 5498 All Data (n = 5498)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>eng1 <span class="ot">&lt;-</span> english[,<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">5</span><span class="sc">:</span><span class="dv">8</span>,<span class="dv">10</span>)]</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(eng1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  age birth_order ethnicity    sex         mom_ed vocab
+1  24       First     Asian Female       Graduate   337
+2  19      Second     Black Female        College   384
+3  24       First     Other   Male Some_Secondary    76
+4  18       First     White   Male      Secondary    19
+5  24       First     White Female      Secondary   480
+6  19       First     Other Female   Some_College   313</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>eng1 <span class="ot">&lt;-</span> stats<span class="sc">::</span><span class="fu">na.omit</span>(eng1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s explore the role, if any, of the mother’s educational level. For each given level, find the estimated density of vocabulary:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(<span class="sc">~</span> vocab <span class="sc">|</span> mom_ed, <span class="at">type=</span><span class="st">'density'</span>, <span class="at">data=</span>eng1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tutorial_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>More or less as expected, though except for the Primary case, the data is largely clumped together.</p>
+<p>Actually, the Primary case is surprisingly bimodal, so we should be suspicious. Is it due to having a small sample size for that case? Let’s check:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(eng1,<span class="fu">tapply</span>(vocab,mom_ed,length))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       College       Graduate        Primary      Secondary   Some_College 
+           847            576              8            433            594 
+ Some_Graduate Some_Secondary 
+           155            128 </code></pre>
+</div>
+</div>
+<p>Remove those cases.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>eng2 <span class="ot">&lt;-</span> eng1[eng1<span class="sc">$</span>mom_ed <span class="sc">!=</span> <span class="st">'Primary'</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Sample Size Issues">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Sample Size Issues
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><em>Graph appearance depends on sample size.</em> If you see what appears to be an anomalous graph, check for small samples. Indeed, keep sample size in mind when noting <em>any</em> “interesting” plots.</p>
+</div>
+</div>
+<p>Reputedly, girls are initially ahead of boys. True?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(vocab <span class="sc">~</span> age <span class="sc">|</span> sex, <span class="at">type=</span><span class="fu">type_lm</span>(<span class="at">se=</span><span class="cn">FALSE</span>), <span class="at">data=</span>eng2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tutorial_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Yes, according to this, the girls are always somewhat ahead.</p>
+<p>What about across ethnicities?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(vocab <span class="sc">~</span> age <span class="sc">|</span> ethnicity, <span class="at">type=</span><span class="fu">type_lm</span>(<span class="at">se=</span><span class="cn">FALSE</span>), <span class="at">data=</span>eng2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tutorial_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The different ethnicities seem to cluster into two groups, with the disparity growing with age.</p>
+<p>Does the mother’s educational level make a difference?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(vocab <span class="sc">~</span> age <span class="sc">|</span> mom_ed, <span class="at">type=</span><span class="fu">type_loess</span>(<span class="at">se=</span><span class="cn">FALSE</span>), <span class="at">data=</span>eng2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tutorial_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Yes, while the initial difference is small, by age 30 months gaps have formed.</p>
+<p>Note that, unlike our earlier example with the census data, we see that a linear model would seem to work well here, so let’switch to that.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(vocab <span class="sc">~</span> age <span class="sc">|</span> mom_ed, <span class="at">type=</span><span class="fu">type_lm</span>(<span class="at">se=</span><span class="cn">FALSE</span>), <span class="at">data=</span>eng2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tutorial_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="use-of-color-gradients" class="level3">
+<h3 class="anchored" data-anchor-id="use-of-color-gradients">Use of color gradients</h3>
+<p>Illustration of the color gradient in the census data: Find the probability that a customer exits, given balance and number of products they use.</p>
+<p>Recall that for a logistic model, <strong>glm</strong> finds the probability of “Y=1”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">glm</span>(Exited <span class="sc">~</span> Balance <span class="sc">+</span> NumOfProducts,<span class="at">data=</span>iranChurn,<span class="at">family=</span>binomial)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>iranChurn<span class="sc">$</span>Fit <span class="ot">&lt;-</span> z<span class="sc">$</span>fitted.values</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plt</span>(Balance <span class="sc">~</span> NumOfProducts <span class="sc">|</span> Fit, <span class="at">data=</span>iranChurn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tutorial_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The fitted values are probabilities of leaving, with dark blue representing the highest probabilities and yellow-green the lowest. Customers with a lot of products seem less likely to leave, and by the way, exhibit a narrower range in balance.</p>
+<p>Age is always of interest:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">glm</span>(Exited <span class="sc">~</span> Balance <span class="sc">+</span> Age,<span class="at">data=</span>iranChurn,<span class="at">family=</span>binomial)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>iranChurn<span class="sc">$</span>Fit <span class="ot">&lt;-</span> z<span class="sc">$</span>fitted.values</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plt</span>(Balance <span class="sc">~</span> Age <span class="sc">|</span> Fit, <span class="at">data=</span>iranChurn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tutorial_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Nice picture of a fish!</p>
+<p>We see that older customers are more likely to leave, even with the same balance as younger ones.</p>
+<div class="callout callout-style-default callout-important callout-titled" title="Subtle Change in the | Operator">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Subtle Change in the | Operator
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The following may seem to be just a mathematical nicety, but it is actually quite important.</p>
+<p>When we first discussed the | operator, we noted that it makes sense, because | is used in probability theory for quantities like P(A|B).</p>
+<blockquote class="blockquote">
+<p>Natural syntax: R ‘formula’ plus ‘|’, the latter evoking conditional probability. E.g.</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(<span class="sc">~</span> wageinc <span class="sc">|</span> gender, <span class="at">data=</span>svcensus,<span class="at">type=</span><span class="st">'density'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>specifies that we plot the <em>conditional</em> density of income, <em>given</em> gender.</p>
+</blockquote>
+<p>Here in the current section on color gradients, we are still using | – but in the reverse direction! E.g. in the code</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plt</span>(Balance <span class="sc">~</span> Age <span class="sc">|</span> Fit, <span class="at">data=</span>iranChurn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>we are displaying the (estimated) conditional probability of Exit, given Balance and Age. In other words, the conditioning quantity is now <em>before</em> the |, not after it.</p>
+</div>
+</div>
+</section>
+<section id="layering" class="level3">
+<h3 class="anchored" data-anchor-id="layering">Layering</h3>
+<p>Here one builds up a plot one aspect at a time, literally layer by layer. The analyst may have pre-planned this, to show the effects of adding material to a plot one step at a time, or it could arise as a sudden inspiration, “Hey, what if we add such and such?”</p>
+<p>As an example, let’s revisit one of our earlier operations:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot</span>(wageinc <span class="sc">~</span> age <span class="sc">|</span> gender, <span class="at">type=</span><span class="fu">type_lm</span>(<span class="at">se=</span><span class="cn">FALSE</span>),<span class="at">data=</span>svcensus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tutorial_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>All is well and good, right? But…the analyst may suddenly think, “Should we be using linear models here?” He/she can then add nonparametric estimates of the curves, superimposing them on the original:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tinyplot_add</span>(<span class="at">type=</span><span class="st">'loess'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2regests.png" class="img-fluid figure-img"></p>
+<figcaption>superimposed curves</figcaption>
+</figure>
+</div>
+<p>Of course, layering is often used for annotation.</p>
 
 
 </section>
