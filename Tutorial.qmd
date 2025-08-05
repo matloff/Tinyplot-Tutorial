@@ -1,8 +1,8 @@
 
 
 ---
-title: "Tinyplot Tutorial"
-subtitle: "A quick into to an R graphics package"
+title: "Drawing Insight with Tinyplot Graphics"
+subtitle: "A quick into to generating interpretable graphs"
 author: Norm Matloff
 toc: true
 ---
@@ -20,8 +20,14 @@ Advantages:
 * Automatic generation of legends.
 
 * Natural syntax: R 'formula' plus '|', the latter evoking conditional
-  probability. E.g. "salary ~ age | sex", plotting salary against age,
-  with separate curves etc. for men and women. 
+  probability. E.g. 
+
+  ``` r
+  tinyplot(~ wageinc | gender, data=svcensus,type='density')
+  ```
+
+  specifies that we plot the *conditional* density of income, *given*
+  gender.
 
 * One can even have e.g. ' | U' for a continuous U! It then means a color
   gradient, say for a third variable.
@@ -34,7 +40,13 @@ Advantages:
 
 :::
 
-# Syntax Overview
+Our goal:
+
+> Here we present the main features of the **tinyplot** package, but
+> importantly, not in isolation, i.e. *not just the mechanics*. We show
+> how the package can be *used* for effective storytelling.
+
+## Syntax Overview
 
 Roughly speaking, the call form is
 
@@ -54,9 +66,9 @@ come *before* the **data** argument.
 
 Layering can be done via **tinyplot_add**.
 
-# Examples
+## Examples
 
-## The Census Dataset
+### The Census dataset
 
 These are programmers and engineers in the 2000 census. Here **occ** is 
 one of 6 job categories. My primary interest here is investigating
@@ -71,13 +83,12 @@ data(svcensus)
 head(svcensus,5)
 ``` 
 
-## Compare Densities across Groups
+### Compare densities across groups
 
 ```{r}
 # plot histograms (area 1.0)
 library(tinyplot)
-tinyplot(~ wageinc | gender,
-   data=svcensus,type='density')
+tinyplot(~ wageinc | gender, data=svcensus,type='density')
 ```
 
 Men seem to have a slight edge in the middle income levels, but possibly
@@ -94,7 +105,7 @@ tinyplot( ~ wkswrkd | gender,data=svcensus,type='density')
 Not much difference in general, but more women seemed to report 0 weeks
 worked. 
 
-## Fit and Display a Linear Model
+### Fit and display a linear model
 
 It is then natural to correct for number of weeks worked via linear
 regression:
@@ -126,7 +137,7 @@ tinyplot(wageinc ~ age | gender, type=type_lm(se = FALSE), data=svcensus)
 A clear separation between men and women, with mean wages being
 consistently lower for women.
 
-## Model-Free Estimation of a Regression Function
+### Model-free estimation of a regression function
 
 But...should we apply a linear model so carelessly? Let's try a
 model-free estimate of the regression functions, using R's **loess**,
@@ -137,9 +148,16 @@ model in each interval.
 tinyplot(wageinc ~ age | gender, type=type_loess(se=FALSE),data=svcensus)
 ```
 
-Whoa! Never assume a linear model willy-nilly. The true relation is
-quite nonmonotonic.  One of the factors underlying this nonmonotonicity
-may be age discrimination. 
+Whoa!  One of the factors underlying this nonmonotonicity may be age
+discrimination. 
+
+::: {.callout-tip title='Sample Size Issues'}
+
+Never assume a linear model willy-nilly. While no relation in practice
+is exactly linear and slight discrepancies are fine, the relation may be
+substantially nonlinear, even substantially nonmonotonic..
+
+:::
 
 At any rate, men definitely seem to be paid more, particularly in their
 early 40s.
@@ -176,7 +194,13 @@ tinyplot(wageinc ~ age | gender, type = type_loess(se=FALSE),
 The male advantage seems to be especially pronounced for occupation code
 140.
 
-## The Iranian Churn Dataset
+::: {.callout-tip title='Pesky Syntax Rules'}
+
+Don't forget the tilde in specifying the faceting variables!
+
+:::
+
+### The Iranian Churn dataset
 
 Let's look at the **Iranian Churn** data in **qeML**, on customer
 loyalty in the financial sector.
@@ -186,7 +210,7 @@ data(IranianChurn)
 head(iranChurn)
 ```
 
-## Compare Densities across Groups
+### Compare densities across groups
 
 ```{r}
 tinyplot(~ Balance | Geography, type='density',data=iranChurn)
@@ -212,9 +236,11 @@ tinyplot(~ Balance | Geography, type=type_density(kernel='triangular'),
    data=iranChurn)
 ```
 
-## General Linear Models
+Not much difference.
 
-One can also apply the general linear model:
+### Generalized linear models
+
+One can also apply generalized linear models, say the logistic:
 
 ```{r}
 iranChurn$Exited <- as.numeric(iranChurn$Exited == '1')
@@ -223,10 +249,83 @@ tinyplot(Exited ~ Balance, type=type_glm(family=binomial),data=iranChurn)
 
 The higher the balance, the more likely the customer is to bolt.
 
-## Use of Color Gradients
+### The Stanford Vocabulary dataset
 
-Illustration of the color gradient: Probability customer exits, given
-balance and number of products they use.
+This is a survey of vocabulary sizes of young children.
+
+```{r}
+library(qeML)
+data(english)
+head(english)
+eng1 <- english[,c(2,5:8,10)]
+head(eng1)
+eng1 <- stats::na.omit(eng1)
+```
+
+Let's explore the role, if any, of the mother's educational level.
+
+```{r}
+tinyplot(~ vocab | mom_ed, type='density', data=eng1)
+```
+
+More or less as expected, though except for the Primary case, the data
+is largely clumped together. 
+
+The Primary case is surprisingly bimodal, so we should be suspicious.
+Is it due to having a small sample size for that case?  Let's check:
+
+```{r}
+with(eng1,tapply(vocab,mom_ed,length))
+```
+
+Remove those cases.
+
+```{r}
+eng2 <- eng1[eng1$mom_ed != 'Primary',]
+```
+
+::: {.callout-tip title='Sample Size Issues'}
+
+*Graph appearance depends on sample size.* If you see what appears to be
+an anomalous graph, check for small samples. Indeed, keep sample size in
+mind when noting *any* "interesting" plots.
+
+:::
+
+Reputedly, girls are initially ahead of boys. True?
+
+```{r}
+tinyplot(vocab ~ age | sex, type=type_lm(se=FALSE), data=eng2)
+```
+
+What about across ethnicities?
+
+```{r}
+tinyplot(vocab ~ age | ethnicity, type=type_lm(se=FALSE), data=eng2)
+```
+
+No, boys seem to be somewhat ahead from the start.
+
+Does the mother's educational level make a difference?
+
+```{r}
+tinyplot(vocab ~ age | mom_ed, type=type_loess(se=FALSE), data=eng2)
+```
+
+Yes, while the initial difference is small, by age 30 months gaps have
+formed.
+
+Note that, unlike our earlier example with the census data, we see that
+a linear model would seem to work well here, so let'switch to that.
+
+```{r}
+tinyplot(vocab ~ age | mom_ed, type=type_lm(se=FALSE), data=eng2)
+```
+
+### Use of color gradients
+
+Illustration of the color gradient in the census data: Probability
+customer exits, given balance and number of products they use.
 
 ```{r}
 z <- glm(Exited ~ Balance + NumOfProducts,data=iranChurn,family=binomial)
@@ -234,9 +333,10 @@ iranChurn$Fit <- z$fitted.values
 plt(Balance ~ NumOfProducts | Fit, data=iranChurn)
 ```
 
-The fitted values are probabilities of leaving.  Customers with a lot of
-products seem less likely to leave, and by the way, exhibit a narrower
-range in balance.
+The fitted values are probabilities of leaving, with dark blue
+representing the highest probabilities and yellow-green the lowest.
+Customers with a lot of products seem less likely to leave, and by the
+way, exhibit a narrower range in balance.
 
 Age is always of interest:
 
@@ -246,10 +346,39 @@ iranChurn$Fit <- z$fitted.values
 plt(Balance ~ Age | Fit, data=iranChurn)
 ```
 
+Nice picture of a fish!
+
 Older customers are more likely to leave, even with the same balance as
 younger ones.
 
+::: {.callout-important title='Subtle Change in the "|"' Operator}
+
+The following may seem to be just a mathematical
+
+:::
 
 
-## Layering
+### Layering
+
+Here one builds up a plot one aspect at a time, literally layer by
+layer. The analyst may have pre-planned this, to show the effects of
+adding material to a plot one step at a time, or it could arise as a
+sudden inspiration, "Hey, what if we add such and such?"
+
+As an example, let's revisit one of our earlier operations:
+
+```{r}
+tinyplot(wageinc ~ age | gender, type=type_lm(se=FALSE),data=svcensus)
+```
+
+All is well and good, right? But...the analyst may suddenly think,
+"Should we be using linear models here?" He/she can then add
+nonparametric estimates of the curves, superimposing them on the
+original:
+
+``` r 
+tinyplot_add(type='loess')
+```
+
+
 
