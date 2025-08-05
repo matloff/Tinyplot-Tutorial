@@ -2,7 +2,7 @@
 
 ---
 title: "Drawing Insight with Tinyplot Graphics"
-subtitle: "A quick into to generating interpretable graphs"
+subtitle: "A quick intro to generating *interpretable* graphs"
 author: Norm Matloff
 toc: true
 ---
@@ -14,7 +14,7 @@ toc: true
 
 I used to use **ggplot2** for almost all my plots, but lately I've just used
 base-R. The **tinyplot** package, an extension of base-R plots, allows me
-to access base-plots in a more convenient, pleasant and intuitive manner.
+to access base-R plots in a more convenient, pleasant and intuitive manner.
 Advantages:
 
 * Automatic generation of legends.
@@ -32,7 +32,7 @@ Advantages:
 * One can even have e.g. ' | U' for a continuous U! It then means a color
   gradient, say for a third variable.
 
-* Easy to add to existing plot. Easy to save plot to disk. Easy faceting. 
+* Easy to add to existing plot. Easy faceting. 
 
 * Base-R ops still available.
 
@@ -70,10 +70,10 @@ Layering can be done via **tinyplot_add**.
 
 ### The Census dataset
 
-These are programmers and engineers in the 2000 census. Here **occ** is 
-one of 6 job categories. My primary interest here is investigating
-possible sex discrimination in salaries. Note: Census data top-coded
-income at \$300,000.
+These are programmers and engineers in Silicon Valley in the 2000
+census. Here **occ** is one of 6 job categories. My primary interest
+here is investigating possible sex discrimination in salaries. Note:
+Census data top-coded income at \$300,000.
 
 So, let's try it on the **svcensus** dataset from my **qeML** package.
 
@@ -108,14 +108,16 @@ worked.
 ### Fit and display a linear model
 
 It is then natural to correct for number of weeks worked via linear
-regression:
+regression. For each gender, fit a linear model predicting **wageinc**
+from **wkswrkd**:
 
 ```{r}
 tinyplot(wageinc ~ wkswrkd| gender,data=svcensus,type='lm')
 ```
 
 Ah, yes, for those who worked most or all of the year, we see a male
-advantage. 
+advantage. That is, for a given number of weeks worked, the mean salary
+is higher for men.
 
 What about possible age differences?
 
@@ -124,8 +126,8 @@ tinyplot(wageinc ~ age | gender, data=svcensus,type='lm')
 ```
 
 Very few elderly in Silicon Valley! Thus very wide confidence bands at
-the older level. Similarly, The wider confidence band for women reflects
-the fact that women are less numerous in this dataset.
+the older level. Similarly, the even wider confidence band for women
+reflects the fact that women are less numerous in this dataset.
 
 The conference bands are informative, but they may result in some
 clutter in more complicated graphs. We can suppress those bands:
@@ -148,8 +150,8 @@ model in each interval.
 tinyplot(wageinc ~ age | gender, type=type_loess(se=FALSE),data=svcensus)
 ```
 
-Whoa!  One of the factors underlying this nonmonotonicity may be age
-discrimination. 
+Whoa! Not linear, not even monotonic.  One of the factors underlying
+this nonmonotonicity may be age discrimination. 
 
 ::: {.callout-tip title='Sample Size Issues'}
 
@@ -172,6 +174,8 @@ tinyplot(~ wageinc, type='density',data = svcensus, facet=~occ)
 
 Occupation codes 102 and 141 pay the most.
 
+We can break it down further by gender:
+
 ```{r}
 tinyplot(~ wageinc | gender, type='density',data = svcensus, facet=~occ)
 ```
@@ -185,6 +189,9 @@ We can facet on two variables:
 tinyplot(~ wageinc | gender, type='density',data = svcensus,
 facet=~occ:gender)
 ```
+
+How about age? Do the sex-specific relations between wageinc and age
+vary from one occupation to another?
 
 ```{r}
 tinyplot(wageinc ~ age | gender, type = type_loess(se=FALSE), 
@@ -263,6 +270,7 @@ eng1 <- stats::na.omit(eng1)
 ```
 
 Let's explore the role, if any, of the mother's educational level.
+For each given level, find the estimated density of vocabulary:
 
 ```{r}
 tinyplot(~ vocab | mom_ed, type='density', data=eng1)
@@ -271,8 +279,9 @@ tinyplot(~ vocab | mom_ed, type='density', data=eng1)
 More or less as expected, though except for the Primary case, the data
 is largely clumped together. 
 
-The Primary case is surprisingly bimodal, so we should be suspicious.
-Is it due to having a small sample size for that case?  Let's check:
+Actually, the Primary case is surprisingly bimodal, so we should be
+suspicious.  Is it due to having a small sample size for that case?
+Let's check:
 
 ```{r}
 with(eng1,tapply(vocab,mom_ed,length))
@@ -298,13 +307,16 @@ Reputedly, girls are initially ahead of boys. True?
 tinyplot(vocab ~ age | sex, type=type_lm(se=FALSE), data=eng2)
 ```
 
+Yes, according to this, the girls are always somewhat ahead.
+
 What about across ethnicities?
 
 ```{r}
 tinyplot(vocab ~ age | ethnicity, type=type_lm(se=FALSE), data=eng2)
 ```
 
-No, boys seem to be somewhat ahead from the start.
+The different ethnicities seem to cluster into two groups, with the
+disparity growing with age.
 
 Does the mother's educational level make a difference?
 
@@ -324,8 +336,12 @@ tinyplot(vocab ~ age | mom_ed, type=type_lm(se=FALSE), data=eng2)
 
 ### Use of color gradients
 
-Illustration of the color gradient in the census data: Probability
-customer exits, given balance and number of products they use.
+Illustration of the color gradient in the census data: Find the
+probability that a customer exits, given balance and number of products
+they use.
+
+Recall that for a logistic model, **glm** finds the probability of 
+"Y=1".
 
 ```{r}
 z <- glm(Exited ~ Balance + NumOfProducts,data=iranChurn,family=binomial)
@@ -348,12 +364,37 @@ plt(Balance ~ Age | Fit, data=iranChurn)
 
 Nice picture of a fish!
 
-Older customers are more likely to leave, even with the same balance as
-younger ones.
+We see that older customers are more likely to leave, even with the same
+balance as younger ones.
 
-::: {.callout-important title='Subtle Change in the "|"' Operator}
+::: {.callout-important title='Subtle Change in the | Operator'}
 
-The following may seem to be just a mathematical
+The following may seem to be just a mathematical nicety, but it is
+actually quite important.
+
+When we first discussed the | operator, we noted that it makes sense,
+because | is used in probability theory for quantities like P(A|B).
+
+> Natural syntax: R 'formula' plus '|', the latter evoking conditional
+> probability. E.g. 
+> 
+> ``` r
+> tinyplot(~ wageinc | gender, data=svcensus,type='density')
+> ```
+> 
+> specifies that we plot the *conditional* density of income, *given*
+> gender.
+
+Here in the current section on color gradients, we are still using | --
+but in the reverse direction! E.g. in the code
+
+``` r
+plt(Balance ~ Age | Fit, data=iranChurn)
+```
+
+we are displaying the (estimated) conditional probability of Exit,
+given Balance and Age. In other words, the conditioning quantity is now
+*before* the |, not after it.
 
 :::
 
@@ -380,5 +421,7 @@ original:
 tinyplot_add(type='loess')
 ```
 
+![superimposed curves](2regests.png)
 
+Of course, layering is often used for annotation.
 
