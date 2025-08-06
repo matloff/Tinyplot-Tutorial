@@ -83,11 +83,26 @@ data(svcensus)
 head(svcensus,5)
 ``` 
 
+### Scatter plot
+
+Let's see how to do the usual scatter plot.
+
+```{r}
+library(tinyplot)
+tinyplot(wageinc ~ age | gender, data=svcensus,cex=0.1)
+```
+
+The **cex** argument is from base-R plots, specifying that the dots in
+the graph will be 0.1 normal size. Otherwise, they would fuse together
+on this dataset, in one ugly blob.
+
+We will withhold comment on trend for now, but note the horizontal line
+at the top, representing the top-coded salaries. 
+
 ### Compare densities across groups
 
 ```{r}
 # plot histograms (area 1.0)
-library(tinyplot)
 tinyplot(~ wageinc | gender, data=svcensus,type='density')
 ```
 
@@ -152,6 +167,9 @@ tinyplot(wageinc ~ age | gender, type=type_loess(se=FALSE),data=svcensus)
 
 Whoa! Not linear, not even monotonic.  One of the factors underlying
 this nonmonotonicity may be age discrimination. 
+
+Actually, we should have already suspected nonmonotonicity, having seen
+the scatter plot earlier in this tutorial.
 
 ::: {.callout-tip title='Sample Size Issues'}
 
